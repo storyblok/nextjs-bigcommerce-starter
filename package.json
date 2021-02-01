@@ -54,6 +54,7 @@
     "email-validator": "^2.0.4",
     "js-cookie": "^2.2.1",
     "keen-slider": "^5.2.4",
+    "lodash": "^4.17.20",
     "lodash.debounce": "^4.0.8",
     "lodash.random": "^3.2.0",
     "lodash.throttle": "^4.1.1",
@@ -65,6 +66,8 @@
     "react-dom": "^16.14.0",
     "react-merge-refs": "^1.1.0",
     "react-ticker": "^1.2.2",
+    "storyblok-js-client": "^3.3.1",
+    "storyblok-react": "^0.1.2",
     "swr": "^0.4.0",
     "tabbable": "^5.1.5",
     "tailwindcss": "^1.9"
