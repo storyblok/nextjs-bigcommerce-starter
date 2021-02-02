@@ -13,7 +13,7 @@ export async function getStaticProps({
   const config = getConfig({ locale })
 
   const sbParams = {
-    version: "draft"
+    version: preview ? "draft" : "published"
   }
  
   const { data: { story }} = await Storyblok.get('cdn/stories/blog', sbParams)
