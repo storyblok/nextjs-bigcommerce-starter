@@ -1,4 +1,5 @@
 export { default as Avatar } from './Avatar'
+export { default as DynamicComponent } from './DynamicComponent'
 export { default as FeatureBar } from './FeatureBar'
 export { default as Footer } from './Footer'
 export { default as Layout } from './Layout'
