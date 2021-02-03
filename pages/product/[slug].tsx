@@ -13,6 +13,8 @@ import { getConfig } from '@framework/api'
 import getProduct from '@framework/api/operations/get-product'
 import getAllPages from '@framework/api/operations/get-all-pages'
 import getAllProductPaths from '@framework/api/operations/get-all-product-paths'
+import Storyblok, { useStoryblok } from '@lib/storyblok'
+import SbEditable from "storyblok-react"
 
 export async function getStaticProps({
   params,
@@ -20,6 +22,7 @@ export async function getStaticProps({
   preview,
 }: GetStaticPropsContext<{ slug: string }>) {
   const config = getConfig({ locale })
+  let story = {}
 
   const { pages } = await getAllPages({ config, preview })
   const { product } = await getProduct({
@@ -28,12 +31,23 @@ export async function getStaticProps({
     preview,
   })
 
+  const sbParams = {
+    version: "draft"
+  }
+
+  try {
+    const { data } = await Storyblok.get(`cdn/stories/product/${params!.slug}`, sbParams)
+    if(data.story) story = data.story
+  } catch(e) {
+    console.error(`Product ${params!.slug} doesn't exist in Storyblok`)
+  }
+
   if (!product) {
     throw new Error(`Product with slug '${params!.slug}' not found`)
   }
 
   return {
-    props: { pages, product },
+    props: { pages, product, story },
     revalidate: 200,
   }
 }
@@ -57,14 +71,25 @@ export async function getStaticPaths({ locales }: GetStaticPathsContext) {
 
 export default function Slug({
   product,
+  story
 }: InferGetStaticPropsType<typeof getStaticProps>) {
+  // @ts-ignore 
+  const liveStory = useStoryblok(story) 
   const router = useRouter()
 
-  return router.isFallback ? (
-    <h1>Loading...</h1> // TODO (BC) Add Skeleton Views
-  ) : (
-    <ProductView product={product} />
-  )
+  const hasStory = typeof liveStory.content !== 'undefined'
+
+  if(router.isFallback) {
+    return (<h1>Loading...</h1>)
+  } else if (hasStory) {
+    return (
+      <SbEditable content={liveStory.content} key={liveStory.content._uid}>
+        <ProductView product={product} story={liveStory.content} />
+      </SbEditable>
+    )
+  }
+
+  return (<ProductView product={product} />)
 }
 
 Slug.Layout = Layout

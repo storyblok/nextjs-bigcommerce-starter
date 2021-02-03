@@ -17,14 +17,16 @@ import {
   SelectedOptions,
 } from '../helpers'
 import WishlistButton from '@components/wishlist/WishlistButton'
-
+import Storyblok from '@lib/storyblok'
 interface Props {
   className?: string
   children?: any
   product: ProductNode
+  story?: any
+
 }
 
-const ProductView: FC<Props> = ({ product }) => {
+const ProductView: FC<Props> = ({ product, story  }) => {
   const addItem = useAddItem()
   const { price } = usePrice({
     amount: product.prices?.price?.value,
@@ -76,7 +78,7 @@ const ProductView: FC<Props> = ({ product }) => {
       <div className={cn(s.root, 'fit')}>
         <div className={cn(s.productDisplay, 'fit')}>
           <div className={s.nameBox}>
-            <h1 className={s.name}>{product.name}</h1>
+            <h1 className={s.name}>{story && story?.name?.length ? story.name : product.name }</h1>
             <div className={s.price}>
               {price}
               {` `}
@@ -135,7 +137,10 @@ const ProductView: FC<Props> = ({ product }) => {
             ))}
 
             <div className="pb-14 break-words w-full max-w-xl">
-              <Text html={product.description} />
+            { story  && story.description && story.description.content[0].content
+              ? (<Text html={Storyblok.richTextResolver.render(story.description)}/>)
+              : (<Text html={product.description} />)
+              }
             </div>
           </section>
           <div>

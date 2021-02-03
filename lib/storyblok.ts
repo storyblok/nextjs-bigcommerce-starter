@@ -26,7 +26,7 @@ function addBridge(callback: any) {
   }
 }
 
-function initEventListeners(story: any, setStory: any) {
+function initEventListeners(story: StoryData, setStory: any) {
   if (window.storyblok) {
     window.storyblok.init({
       accessToken: process.env.STORYBLOK_TOKEN
